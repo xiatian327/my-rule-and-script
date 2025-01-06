@@ -8,7 +8,6 @@
 
 [Rule]
 # 以下为该软件部分去广告规则
-DOMAIN-KEYWORD,googleads,REJECT-DROP
 DOMAIN-SUFFIX,ads.inmobi.com,REJECT-DROP
 DOMAIN-SUFFIX,adsappier.com,REJECT-DROP
 DOMAIN-SUFFIX,amazon-adsystem.com,REJECT-DROP
