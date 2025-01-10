@@ -1,6 +1,8 @@
 # 规则名称: Talkatone
-# 规则统计: 2
+# 规则统计: 4
 
+DOMAIN-SUFFIX,mobilefuse.com
+DOMAIN-SUFFIX,talkatone.com
 DOMAIN-SUFFIX,tktn.be
 DOMAIN-SUFFIX,tktn.at
 
