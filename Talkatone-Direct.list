@@ -1,5 +1,5 @@
 # 规则名称: Talkatone
-# 规则统计: 14
+# 规则统计: 17
 
 DOMAIN-SUFFIX,agkn.com
 DOMAIN-SUFFIX,cohere.com
@@ -15,5 +15,7 @@ IP-CIDR,63.251.124.0/24,no-resolve
 IP-CIDR,69.46.75.0/24,no-resolve
 IP-CIDR,205.164.56.0/24,no-resolve
 IP-CIDR,50.117.27.0/24,no-resolve
-
+IP-CIDR,198.24.161.0/24,no-resolve
+IP-CIDR,131.153.7.0/24,no-resolve
+IP-CIDR,104.244.53.0/24,no-resolve
 
