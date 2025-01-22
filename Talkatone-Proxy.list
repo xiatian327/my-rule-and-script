@@ -1,6 +1,8 @@
 # 规则名称: Talkatone
-# 规则统计: 2
+# 规则统计: 5
 
 DOMAIN-SUFFIX,tktn.be
 DOMAIN-SUFFIX,tktn.at
-
+IP-CIDR,198.24.161.0/24,no-resolve
+IP-CIDR,131.153.7.0/24,no-resolve
+IP-CIDR,104.244.53.0/24,no-resolve
