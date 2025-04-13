@@ -36,7 +36,7 @@ START_DATE=$(date -u -d "$(date +%Y-%m-01) 00:00:00" +%Y-%m-%dT%H:%M:%SZ)
 END_DATE=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 
 # ====== 获取流量数据 ======
-OUT_BYTES=$(aws cloudwatch get-metric-statistics \
+OUT_BYTES=$(/usr/bin/aws cloudwatch get-metric-statistics \
   --metric-name NetworkOut \
   --start-time "$START_DATE" \
   --end-time "$END_DATE" \
@@ -47,6 +47,13 @@ OUT_BYTES=$(aws cloudwatch get-metric-statistics \
   --region $REGION \
   --query "Datapoints[*].Sum" \
   --output text | awk '{s+=$1} END {print s}')
+
+# 避免空值
+if [ -z "$OUT_BYTES" ]; then
+    echo "无法获取流量数据，跳过本次运行"
+    send_telegram "错误：脚本无法获取出站流量数据，请检查 AWS CLI 配置或 IAM 权限。"
+    exit 1
+fi
 
 OUT_GB=$(echo "scale=2; $OUT_BYTES / 1024 / 1024 / 1024" | bc)
 echo "$(date): 本月出站流量为 $OUT_GB GB"
