@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # ====== 用户配置项 ======
-INSTANCE_ID="6688"
-REGION="singapore"
+INSTANCE_ID="i-00609028a1dcbcb3c"
+REGION="ap-southeast-1"
 WARNING_THRESHOLD_GB=90
 CRITICAL_THRESHOLD_GB=97
 
