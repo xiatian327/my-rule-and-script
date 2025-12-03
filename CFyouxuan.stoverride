@@ -1,0 +1,24 @@
+name: Cloudflare优选
+desc: 自动优选CF IP并显示在首页Tile
+
+# ================================
+# 1. 界面定义 (UI)
+# ================================
+tiles:
+  - name: CF-Best-IP
+    title: Cloudflare 优选
+    content: 点击运行优选
+    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Cloudflare.png
+    # false = 展开显示详情，true = 仅显示图标
+    collapsed: false
+    # 点击是否跳转网页，不需要可以删掉这行
+    # url: http://substore.stash
+
+# ================================
+# 2. 脚本逻辑 (Script)
+# ================================
+script-providers:
+  CF-Best-IP:
+    # ⚠️ 重要：下面这个 URL 必须换成你自己的 GitHub Raw 链接！
+    url: "https://raw.githubusercontent.com/edu001xxk/stashall/refs/heads/main/cf.js"
+    interval: 0
