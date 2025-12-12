@@ -1,15 +1,16 @@
 app = "fly-xia908-2025"
 primary_region = "nrt"
+swap_size_mb = 512
 
 [build]
 image = "ghcr.io/eooce/nodejs:main"
 
 [env]
 ARGO_AUTH = "eyJhIjoiYTBhNGUxYzQwYjBkYTdkODUyNWQ1MjI1YjllMzg0NDYiLCJ0IjoiZDRiNGJkODAtZGNiNS00YTAyLWJhNGUtNDA1NTYxNTBmYmNmIiwicyI6Ik1qYzJZemxsWW1NdE5XVXpOeTAwT0RKbExUZzRZemt0pBMFpqQXhZekl4TVRsaSJ9"
-ARGO_DOMAIN = "fly909.king8888.nyc.mn"
+ARGO_DOMAIN = "fly909.king888.nyc.mn"
 NEZHA_KEY = "P7QOOg71KGhrmVba4FGZ1HxbCyZXrOPq"
 NEZHA_SERVER = "nz2.txia393.nyc.mn:80"
-UUID = "2215feca-daea-45a6-b548-4dda94ab044f"
+UUID = "2215feca-daea-45a6-b48-4dda94ab044f"
 
 [http_service]
 auto_start_machines = true
