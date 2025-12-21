@@ -1,30 +1,27 @@
 name: JavDB网页快捷看番
-desc: 去除JavDB网页广告，视频详情页点击clickPlay即可跳转MissAV。由墨鱼脚本提供。
+desc: 去除JavDB网页广告，视频详情页点击clickPlay即可跳转MissAV。
 author: ddgksf2013
-system: ios
 
-# 脚本部分
+# 修正后的脚本部分（去掉了列表横杠，改用唯一名称作为 Key）
 script:
-  - name: JavDB_Ads
+  JavDB_Ads:
     type: http-response
     pattern: ^https?:\/\/javdb\.com\/(?!(.*(api|login|cdn-cgi|verify|auth|captch|(\.(js|css|jpg|jpeg|png|webp|gif|zip|woff|woff2|m3u8|mp4|mov|m4v|avi|mkv|flv|rmvb|wmv|rm|asf|asx|mp3|json|ico|otf|ttf)))))
     script-path: https://ddgksf2013.top/scripts/javdb.ads.js
     requires-body: true
     timeout: 60
 
-  - name: MissAv_Ads
+  MissAv_Ads:
     type: http-response
     pattern: ^https?:\/\/missav\.(ws|live|com|ai)\/(?!(.*(api|login|cdn-cgi|verify|auth|captch|(\.(js|css|jpg|jpeg|png|webp|gif|zip|woff|woff2|m3u8|mp4|mov|m4v|avi|mkv|flv|rmvb|wmv|rm|asf|asx|mp3|json|ico|otf|ttf)))))
     script-path: https://ddgksf2013.top/scripts/missav.ads.js
     requires-body: true
     timeout: 60
 
-# 规则部分
 rule:
   - DOMAIN-SUFFIX,mc.yandex.ru,REJECT
   - DOMAIN-SUFFIX,static.cloudflareinsights.com,REJECT
 
-# HTTPS 解析部分
 mitm:
   hostname:
     - javdb.com
