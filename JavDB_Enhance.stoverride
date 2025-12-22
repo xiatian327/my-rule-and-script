@@ -1,0 +1,49 @@
+name: "JavDB Web Enhance"
+desc: "去除JavDB网页广告，视频详情页点击clickPlay即可跳转MissAV"
+author: "ddgksf2013"
+
+# 注意：为了确保 Stash 能正确解密，mitm 最好放在最外层，而不是 http 内部
+mitm:
+  hostnames:
+    - "*.javdb.com"
+    - "javdb.com"
+    - "*.missav.live"
+    - "missav.live"
+    - "*.missav.ws"
+    - "missav.ws"
+    - "*.missav.ai"
+    - "missav.ai"
+    - "*.missav.com"
+    - "missav.com"
+
+http:
+  # [span_1](start_span)仿照参考文件，将 DOMAIN-SUFFIX 规则转换为 url-rewrite 形式[span_1](end_span)
+  url-rewrite:
+    - ^https?:\/\/.*mc\.yandex\.ru - reject-200
+    - ^https?:\/\/.*static\.cloudflareinsights\.com - reject-200
+
+  script:
+    # JavDB 匹配规则
+    - match: ^https?:\/\/javdb\.com\/(?!(.*(api|login|cdn-cgi|verify|auth|captch|(\.(js|css|jpg|jpeg|png|webp|gif|zip|woff|woff2|m3u8|mp4|mov|m4v|avi|mkv|flv|rmvb|wmv|rm|asf|asx|mp3|json|ico|otf|ttf)))))
+      name: "JavDB_Script"
+      type: response
+      require-body: true
+      max-size: -1
+      timeout: 60
+
+    # MissAV 匹配规则
+    - match: ^https?:\/\/missav\.(ws|live|com|ai)\/(?!(.*(api|login|cdn-cgi|verify|auth|captch|(\.(js|css|jpg|jpeg|png|webp|gif|zip|woff|woff2|m3u8|mp4|mov|m4v|avi|mkv|flv|rmvb|wmv|rm|asf|asx|mp3|json|ico|otf|ttf)))))
+      name: "MissAV_Script"
+      type: response
+      require-body: true
+      max-size: -1
+      timeout: 60
+
+# [span_2](start_span)脚本源定义，放在底部[span_2](end_span)
+script-providers:
+  "JavDB_Script":
+    url: https://ddgksf2013.top/scripts/javdb.ads.js
+    interval: 86400
+  "MissAV_Script":
+    url: https://ddgksf2013.top/scripts/missav.ads.js
+    interval: 86400
