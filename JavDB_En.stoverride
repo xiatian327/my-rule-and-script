@@ -1,0 +1,37 @@
+name: JavDB网页快捷看番 (Stash修正版)
+description: 去除JavDB网页广告，视频详情页点击clickPlay即可跳转MissAV
+author: ddgksf2013
+
+# 1. Stash 的 MitM 必须在根目录下，不能包裹在 http 中
+mitm:
+  hostnames:
+    - javdb.com
+    - missav.live
+    - missav.ws
+    - missav.ai
+    - missav.com
+
+# 2. 脚本提供者配置
+script-providers:
+  JavDB_Enhance:
+    url: https://ddgksf2013.top/scripts/javdb.ads.js
+    interval: 86400
+    type: http-response
+    require-body: true
+    max-size: -1
+    # 复杂的正则建议简化，排除静态资源的工作由脚本内部判断或通过简单的 url 匹配
+    # 这里使用基础匹配，确保脚本能被触发
+    match: ^https?:\/\/javdb\.com\/
+    
+  MissAv_Enhance:
+    url: https://ddgksf2013.top/scripts/missav.ads.js
+    interval: 86400
+    type: http-response
+    require-body: true
+    max-size: -1
+    match: ^https?:\/\/missav\.(ws|live|com|ai)\/
+
+# 3. 拦截规则 (可选，Stash 覆写中通常不放规则，但如果需要可以加上)
+rules:
+  - DOMAIN-SUFFIX,mc.yandex.ru,REJECT
+  - DOMAIN-SUFFIX,static.cloudflareinsights.com,REJECT
