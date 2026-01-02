@@ -1,0 +1,28 @@
+payload:
+  ## Trading 212 - Main Rules
+  - DOMAIN-SUFFIX,trading212.com
+  - DOMAIN-KEYWORD,trading212
+
+  ## Specific Subdomains (Redundant due to suffix, but kept for strict mapping)
+  - DOMAIN,www.trading212.com
+  - DOMAIN,live.services.trading212.com
+  - DOMAIN,community.trading212.com
+  - DOMAIN,helpcentre.trading212.com
+
+  ## Support & Infrastructure (AWS, Zendesk)
+  - DOMAIN,trading2129704.zendesk.com
+  - DOMAIN,trading212equities.s3.amazonaws.com
+  - DOMAIN,trading212equities.s3.eu-central-1.amazonaws.com
+
+  ## Related Domains (Onfido, TrueLayer, AppsFlyer, etc.)
+  - DOMAIN,api.onfido.com
+  - DOMAIN,login.truelayer.com
+  - DOMAIN,stats.azmsoft.com
+  - DOMAIN,eu1.clevertap-prod.com
+  - DOMAIN,ocsp.r2m01.amazontrust.com
+  - DOMAIN,d14vqntc8kjril.cloudfront.net
+  - DOMAIN,d1o59w04t0rrym.cloudfront.net
+  - DOMAIN,yrkm8m-inapps.appsflyersdk.com
+  - DOMAIN,yrkm8m-launches.appsflyersdk.com
+  - DOMAIN,yrkm8m-skadsdkless.appsflyersdk.com
+  - DOMAIN,yrkm8m-cdn-settings.appsflyersdk.com
