@@ -1,0 +1,34 @@
+name: |-
+  pingme
+desc: |-
+  pingme
+author: |-
+  怎么肥事[https://t.me/Nzmgs]
+icon: |-
+  https://raw.githubusercontent.com/axhani/icon/refs/heads/main/PingMe.png
+date: |-
+  2026-4-16
+loon_version: |-
+  3.2.4(787)
+
+http:
+
+  mitm:
+    - "api.pingmeapp.net"
+
+  script:
+    - match: ^https:\/\/api\.pingmeapp\.net\/app\/queryBalanceAndBonus
+      name: "PingMe签到任务_10"
+      type: request
+      timeout: 300
+
+cron:
+  script:
+    - name: "PingMe签到任务_10"
+      cron: "30 8
+      timeout: 120
+
+script-providers:
+  "PingMe签到任务_10":
+    url: https://axhani.pages.dev/refs/heads/main/Script%20/Tasks/PingMe.js
+    interval: 86400
