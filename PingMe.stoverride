@@ -1,34 +1,19 @@
-name: |-
-  pingme
-desc: |-
-  pingme
-author: |-
-  怎么肥事[https://t.me/Nzmgs]
-icon: |-
-  https://raw.githubusercontent.com/axhani/icon/refs/heads/main/PingMe.png
-date: |-
-  2026-4-16
-loon_version: |-
-  3.2.4(787)
+name: "pingme"
+description: "pingme"
+author: "怎么肥事"
 
-http:
+mitm:
+  - "api.pingmeapp.net"
 
-  mitm:
-    - "api.pingmeapp.net"
-
-  script:
-    - match: ^https:\/\/api\.pingmeapp\.net\/app\/queryBalanceAndBonus
-      name: "PingMe签到任务_10"
-      type: request
+scriptings:
+  - http_request:
+      name: PingMe签到任务_10
+      match: ^https:\/\/api\.pingmeapp\.net\/app\/queryBalanceAndBonus
+      script_url: https://axhani.pages.dev/refs/heads/main/Script%20/Tasks/PingMe.js
       timeout: 300
-
-cron:
-  script:
-    - name: "PingMe签到任务_10"
-      cron: "30 8
+      
+  - cron:
+      name: PingMe签到任务_10_定时
+      cronexp: "30 8 * * *"  # 修复并补全了 cron 表达式，表示每天早上 8:30 运行
+      script_url: https://axhani.pages.dev/refs/heads/main/Script%20/Tasks/PingMe.js
       timeout: 120
-
-script-providers:
-  "PingMe签到任务_10":
-    url: https://axhani.pages.dev/refs/heads/main/Script%20/Tasks/PingMe.js
-    interval: 86400
