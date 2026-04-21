@@ -1,0 +1,31 @@
+name: |-
+  JavDB App to SenPlayer
+desc: |-
+  完美版：jav自动跳转sen
+
+http:
+
+  mitm:
+    - "apidd.btyjscl.com"
+
+  script:
+# > 1. 拦截通知点击后的网页，返回跳转 HTML
+    - match: ^https?:\/\/apidd\.btyjscl\.com\/senplayer_redirect
+      name: "javdb_app_to_senplayer"
+      type: request
+      require-body: false
+      max-size: -1
+      timeout: 10
+      
+# > 2. 拦截 App 接口请求，抓取番号
+    - match: ^https?:\/\/apidd\.btyjscl\.com\/api\/v[0-9]+\/movies\/[a-zA-Z0-9]+
+      name: "javdb_app_to_senplayer"
+      type: response
+      require-body: true
+      max-size: -1
+      timeout: 10
+
+script-providers:
+  "javdb_app_to_senplayer":
+    url: https://raw.githubusercontent.com/edu001xxk/stashall/refs/heads/main/javdb_app_to_senplayer.js?v=888123
+    interval: 86400

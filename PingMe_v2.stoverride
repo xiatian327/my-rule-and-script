@@ -1,0 +1,47 @@
+name: PingMe自动签到
+desc: 自动执行 PingMe 签到与视频奖励，并在首页 Tile 显示余额详情
+
+# ================================
+# 1. 界面定义 (UI)
+# ================================
+tiles:
+  - name: PingMe-Tile
+    title: PingMe 签到
+    content: 点击运行签到或等待定时触发
+    icon: gift.fill # 可以用系统图标，也可以换成 PingMe 的 URL 图标
+    backgroundColor: "#FF9500" # 默认给个橙色，脚本执行成功后会变成绿色
+    collapsed: false
+
+# ================================
+# 2. 脚本逻辑 (Script)
+# ================================
+script-providers:
+  PingMe-Tile:
+    # ⚠️ 重要：把这里的 URL 换成你托管 PingMe_Stash.js 的 GitHub Raw 链接
+    url: "https://raw.githubusercontent.com/edu001xxk/stashall/refs/heads/main/PingMe_Stash_v2.js"
+    interval: 86400 # 面板自动刷新的间隔，主要还是靠 cron 定时任务和手动点击触发
+
+# ================================
+# 3. 定时任务与抓包规则 (Cron & MITM)
+# ================================
+cron:
+  script:
+    # 每3小时一次
+    - name: PingMe-Tile
+      cron: "0 */3 * * *"
+      timeout: 60
+
+http:
+
+  mitm:
+  - "api.pingmeapp.net"
+
+  script:
+    # 用于抓取 Token 参数
+    - match: ^https:\/\/api\.pingmeapp\.net\/app\/queryBalanceAndBonus
+      name: PingMe-Tile
+      type: request
+      require-body: true
+      timeout: 10
+
+
