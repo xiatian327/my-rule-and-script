@@ -18,7 +18,7 @@ tiles:
 script-providers:
   PingMe-Tile:
     # ⚠️ 重要：把这里的 URL 换成你托管 PingMe_Stash.js 的 GitHub Raw 链接
-    url: "https://raw.githubusercontent.com/xiatian327/my-rule-and-script/refs/heads/main/PingMe_Stash_v2.js"
+    url: "https://raw.githubusercontent.com/xiatian327/my-rule-and-script/refs/heads/main/script/PingMe_Stash.js"
     interval: 86400 # 面板自动刷新的间隔，主要还是靠 cron 定时任务和手动点击触发
 
 # ================================
