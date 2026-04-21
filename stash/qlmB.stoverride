@@ -1,0 +1,29 @@
+name: |-
+  青龙面板
+desc: |-
+  青龙面板
+icon: |-
+  https://raw.githubusercontent.com/xiatian327/TuBiaoJi/refs/heads/main/qlmb.png
+
+http:
+
+  mitm:
+    - "api.revenuecat.com"
+
+  script:
+    - match: ^https?:\/\/api\.revenuecat\.com\/.+\/(receipts$|subscribers\/?(.*?)*$)
+      name: "qlmB_13"
+      type: response
+      require-body: true
+      max-size: -1
+      timeout: 60
+
+    - match: ^https?:\/\/api\.revenuecat\.com\/.+\/(receipts$|subscribers\/?(.*?)*$)
+      name: "qlmB_13"
+      type: request
+      timeout: 60
+
+script-providers:
+  "qlmB_13":
+    url: https://raw.githubusercontent.com/89996462/Quantumult-X/main/ycdz/qlmB.js
+    interval: 86400
