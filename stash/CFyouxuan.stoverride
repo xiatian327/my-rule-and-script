@@ -20,5 +20,5 @@ tiles:
 script-providers:
   CF-Best-IP:
     # ⚠️ 重要：下面这个 URL 必须换成你自己的 GitHub Raw 链接！
-    url: "https://raw.githubusercontent.com/edu001xxk/stashall/refs/heads/main/cf.js"
+    url: "https://raw.githubusercontent.com/edu001xxk/stashall/refs/heads/main/script/cf.js"
     interval: 0
