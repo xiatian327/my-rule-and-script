@@ -41,5 +41,5 @@ http:
 
 script-providers:
   "javdbapp_ads":
-    url: https://raw.githubusercontent.com/xiatian327/my-rule-and-script/refs/heads/main/javdbapp.ads.js
+    url: https://raw.githubusercontent.com/xiatian327/my-rule-and-script/refs/heads/main/script/javdbapp.ads.js
     interval: 86400
