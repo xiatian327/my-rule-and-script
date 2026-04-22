@@ -125,15 +125,17 @@ function handleSuccess(code, m3u8, source) {
     console.log(`🔗 播放链接: ${m3u8}`);
     console.log(`==================================\n`);
     
-    let shortcutUrl = `shortcuts://run-shortcut?name=JavPlay&input=text&text=${encodeURIComponent(m3u8)}`;
+    // 🔥 修改点：直接拼接 zipymlite:// 和播放链接
+    let targetUrl = `zipymlite://${m3u8}`; 
+    
     let title = `▶ 解析成功 (${source}): ${code.toUpperCase()}`;
     let subtitle = `已找到串流链接并记录至日志`;
-    let content = `👇 点击弹窗立即拉起 SenPlayer`;
+    let content = `👇 点击弹窗立即唤起播放器`;
 
     if (typeof $environment !== 'undefined' && $environment['stash-version']) {
-        $notification.post(title, subtitle, content, { url: shortcutUrl });
+        $notification.post(title, subtitle, content, { url: targetUrl });
     } else {
-        $notification.post(title, subtitle, content, shortcutUrl);
+        $notification.post(title, subtitle, content, targetUrl);
     }
     
     $done({ body });
