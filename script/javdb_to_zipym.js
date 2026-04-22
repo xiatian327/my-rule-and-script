@@ -8,17 +8,13 @@ if (!body) {
     let allMatches = body.match(idRegGlobal);
 
     if (allMatches && allMatches.length > 0) {
-        // 转小写并去重，统计这个数据包里有多少个【不同】的番号
+        // 转小写并去重，统计数据包里有多少个不同的番号
         let uniqueCodes = new Set(allMatches.map(c => c.toLowerCase()));
         
-        // 🌟 核心防误弹逻辑 🌟
-        // 如果包含超过 5 个不同的番号，说明这绝对是首页的推荐列表或排行榜，直接跳过！
+        // 核心防误弹逻辑：包含超过 5 个说明是列表页，跳过
         if (uniqueCodes.size > 5) {
-            // console.log(`[JavDB-SenPlayer] 识别为列表页 (包含 ${uniqueCodes.size} 个番号)，跳过执行。`);
             $done({ body });
         } else {
-            // 如果是详情页，通常只有当前影片的主番号（偶尔带一两个关联番号）
-            // 我们取第一个匹配到的作为目标番号
             let code = allMatches[0].toLowerCase();
             
             // --- Stash 10秒防并发锁 ---
@@ -35,70 +31,87 @@ if (!body) {
                 console.log(`\n[JavDB-SenPlayer] ♻️ Stash 防抖拦截: 10秒内重复请求了 ${code.toUpperCase()}`);
                 $done({ body });
             } else {
-                // 写入锁定时间
                 if (typeof $persistentStore !== "undefined") {
                     $persistentStore.write(now.toString(), cacheKey);
                 }
                 
-                console.log(`\n[JavDB-SenPlayer] 🔍 确认进入详情页，开始搜索番号: ${code.toUpperCase()}`);
+                console.log(`\n[JavDB-SenPlayer] 🔍 开始搜索番号: ${code.toUpperCase()}`);
                 runJableSearch(code);
             }
         }
     } else {
-        // 没找到番号，直接放行
         $done({ body });
     }
 }
 
 // ==========================================
-// 独立函数 1：请求 Jable 原番号
+// 1. 请求 Jable 原番号
 // ==========================================
 function runJableSearch(code) {
-    let jableUrl = `https://jable.tv/videos/${code}/`;
+    let url = `https://jable.tv/videos/${code}/`;
     $httpClient.get({
-        url: jableUrl,
+        url: url,
         headers: getFakeHeaders()
     }, function(error, response, data) {
-        let foundM3u8 = false;
-        
         if (!error && response && response.status === 200) {
-            let m3u8Reg = /https?:\/\/[^"'\s<>]+\.m3u8/i;
-            let m3u8Match = data ? data.match(m3u8Reg) : null;
-            if (m3u8Match) {
-                foundM3u8 = true;
-                handleSuccess(code, m3u8Match[0], "Jable");
-            }
-        }
-        
-        if (!foundM3u8) {
-            console.log(`[JavDB-SenPlayer] ⚠️ Jable 原番号未找到，尝试带 -c 后缀...`);
+            handleSuccess(code, url, "Jable");
+        } else {
+            console.log(`[JavDB-SenPlayer] ⚠️ Jable 未找到，尝试带 -c 后缀...`);
             runJableCSearch(code);
         }
     });
 }
 
 // ==========================================
-// 独立函数 2：请求 Jable -c 后缀
+// 2. 请求 Jable 带 -c 后缀
 // ==========================================
 function runJableCSearch(code) {
-    let jableUrlC = `https://jable.tv/videos/${code}-c/`;
+    let url = `https://jable.tv/videos/${code}-c/`;
     $httpClient.get({
-        url: jableUrlC,
+        url: url,
         headers: getFakeHeaders()
     }, function(error, response, data) {
-        let foundM3u8 = false;
-        
         if (!error && response && response.status === 200) {
-            let m3u8Reg = /https?:\/\/[^"'\s<>]+\.m3u8/i;
-            let m3u8Match = data ? data.match(m3u8Reg) : null;
-            if (m3u8Match) {
-                foundM3u8 = true;
-                handleSuccess(code, m3u8Match[0], "Jable");
-            }
+            handleSuccess(code, url, "Jable (-c)");
+        } else {
+            console.log(`[JavDB-SenPlayer] ⚠️ Jable 均未找到，进入 MissAV...`);
+            runMissAVSearch(code);
         }
-        
-        if (!foundM3u8) {
-            console.log(`[JavDB-SenPlayer] ❌ Jable 原番号及 -c 后缀均未找到，解析结束。`);
+    });
+}
+
+// ==========================================
+// 3. 请求 MissAV (主线 missav.ai/cn)
+// ==========================================
+function runMissAVSearch(code) {
+    let url = `https://missav.ai/cn/${code}/`;
+    $httpClient.get({
+        url: url,
+        headers: getFakeHeaders()
+    }, function(error, response, data) {
+        if (!error && response && response.status === 200) {
+            handleSuccess(code, url, "MissAV");
+        } else {
+            console.log(`[JavDB-SenPlayer] ⚠️ MissAV 主线未找到，尝试 MissAV 备用节点...`);
+            runMissAV123Search(code);
+        }
+    });
+}
+
+// ==========================================
+// 4. 请求 MissAV 备用线路 (missav123.com)
+// ==========================================
+function runMissAV123Search(code) {
+    // 根据参考脚本，此节点无需 /cn/ 路径
+    let url = `https://missav123.com/${code}/`;
+    $httpClient.get({
+        url: url,
+        headers: getFakeHeaders()
+    }, function(error, response, data) {
+        if (!error && response && response.status === 200) {
+            handleSuccess(code, url, "MissAV (备用节点)");
+        } else {
+            console.log(`[JavDB-SenPlayer] ❌ 所有线路 (Jable & MissAV) 均未找到页面，解析结束。`);
             $done({ body });
         }
     });
@@ -119,16 +132,16 @@ function getFakeHeaders() {
 // ==========================================
 // 提取成功后的处理函数
 // ==========================================
-function handleSuccess(code, m3u8, source) {
+function handleSuccess(code, pageUrl, source) {
     console.log(`\n==================================`);
-    console.log(`🎯 [成功获取 M3U8] 数据源: ${source}`);
-    console.log(`🔗 播放链接: ${m3u8}`);
+    console.log(`🎯 [成功获取播放页] 数据源: ${source}`);
+    console.log(`🔗 播放链接: ${pageUrl}`);
     console.log(`==================================\n`);
     
-    let shortcutUrl = `shortcuts://run-shortcut?name=JavPlay&input=text&text=${encodeURIComponent(m3u8)}`;
+    let shortcutUrl = `shortcuts://run-shortcut?name=JavPlay&input=text&text=${encodeURIComponent(pageUrl)}`;
     let title = `▶ 解析成功 (${source}): ${code.toUpperCase()}`;
-    let subtitle = `已找到串流链接并记录至日志`;
-    let content = `👇 点击弹窗立即拉起 Zipym`;
+    let subtitle = `已找到播放网页并记录至日志`;
+    let content = `👇 点击弹窗立即跳转网页`;
 
     if (typeof $environment !== 'undefined' && $environment['stash-version']) {
         $notification.post(title, subtitle, content, { url: shortcutUrl });
