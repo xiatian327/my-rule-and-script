@@ -11,7 +11,7 @@ http:
   script:
 # > 1. 拦截通知点击后的网页，返回跳转 HTML
     - match: ^https?:\/\/apidd\.btyjscl\.com\/senplayer_redirect
-      name: "javdb_app_to_senplayer"
+      name: "javdb_to_zipym"
       type: request
       require-body: false
       max-size: -1
@@ -19,7 +19,7 @@ http:
       
 # > 2. 拦截 App 接口请求，抓取番号
     - match: ^https?:\/\/apidd\.btyjscl\.com\/api\/v[0-9]+\/movies\/[a-zA-Z0-9]+
-      name: "javdb_app_to_senplayer"
+      name: "javdb_to_zipym"
       type: response
       require-body: true
       max-size: -1
