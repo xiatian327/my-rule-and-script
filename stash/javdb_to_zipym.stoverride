@@ -1,7 +1,7 @@
 name: |-
-  JavDB App to SenPlayer
+  JavDB to Zipym
 desc: |-
-  完美版：jav自动跳转sen
+  完美版：jav自动跳转zipym
 
 http:
 
@@ -26,6 +26,6 @@ http:
       timeout: 10
 
 script-providers:
-  "javdb_app_to_senplayer":
-    url: https://raw.githubusercontent.com/xiatian327/my-rule-and-script/refs/heads/main/script/javdb_app_to_senplayer.js?v=88123
+  "javdb_to_zipym":
+    url: https://raw.githubusercontent.com/xiatian327/my-rule-and-script/refs/heads/main/script/javdb_to_zipym.js?v=88123
     interval: 86400
