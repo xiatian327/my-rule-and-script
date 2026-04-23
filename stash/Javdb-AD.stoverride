@@ -2,6 +2,8 @@ name: |-
   JavDB应用去广告@ddgksf2013
 desc: |-
   净化应用内广告
+category: |-
+  ad
 
 http:
 
