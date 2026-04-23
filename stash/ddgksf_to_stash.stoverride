@@ -1,0 +1,36 @@
+http:
+    mitm:
+        - script.hub
+        - "*.script.hub"
+        - ddgksf2013.top
+    force-http-engine:
+        - script.hub
+        - "*.script.hub"
+    script:
+        -   name: 网页变身
+            binary-mode: false
+            match: ^https?:\/\/ddgksf2013\.top\/$
+            max-size: 1048576
+            require-body: true
+            timeout: 20
+            type: response
+            debug: false
+            script-path: web-rocket-js
+        -   name: 脚本转换
+            binary-mode: false
+            # 在正则表达式中增加了 stash-override 的匹配，确保脚本能识别并转换 Stash 格式
+            match: ^https?:\/\/script\.hub\/file\/_start_\/.+type=(?:qx-rewrite|surge-module|stash-override|all-module)
+            max-size: 1048576
+            require-body: true
+            timeout: 20
+            type: request
+            debug: false
+            script-path: script-hub-parser-js
+
+script-providers:
+    web-rocket-js:
+        url: https://ddgksf2013.top/scripts/web.rocket.js
+        interval: 86400
+    script-hub-parser-js:
+        url: https://raw.githubusercontent.com/Script-Hub-Org/Script-Hub/main/Rewrite-Parser.js
+        interval: 86400
