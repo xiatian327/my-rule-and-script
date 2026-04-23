@@ -2,8 +2,15 @@ name: 脚本转换与网页变身 - 远程完美版
 desc: |-
     - 全远程加载，解决 GET 死锁
     - 包含重定向链接修复后处理功能
+    - 已集成 QUIC 协议拦截规则
 category: enhance
 icon: https://stash.wiki/favicon.ico
+
+# 1. 规则部分：强制拦截 QUIC 协议
+rules:
+  - AND,((DOMAIN-SUFFIX,ddgksf2013.top),(PROTOCOL,QUIC)),REJECT-NO-DROP
+
+# 2. MITM 与脚本部分
 http:
     mitm:
         - script.hub
@@ -21,6 +28,7 @@ http:
             timeout: 20
             type: response
             debug: false
+            script-path: web-rocket-remote
             
         -   name: script-hub-parser
             binary-mode: false
@@ -30,14 +38,14 @@ http:
             timeout: 20
             type: request
             debug: false
-            
+            script-path: script-hub-parser-remote
+
+# 3. 远程资源引用
 script-providers:
-    # 1. 网页变身与一键跳转（读取你 GitHub 的更新版）
     web-rocket-remote:
-        url: https://github.com/xiatian327/my-rule-and-script/raw/refs/heads/main/script/ddgksf2013.top_web.rocket.js?v=10
+        url: https://github.com/xiatian327/my-rule-and-script/raw/refs/heads/main/script/ddgksf2013.top_web.rocket.js?v=12
         interval: 86400
         
-    # 2. 官方的万能转换解析脚本
-    script-hub-parser:
+    script-hub-parser-remote:
         url: https://raw.githubusercontent.com/Script-Hub-Org/Script-Hub/main/Rewrite-Parser.js
         interval: 86400
