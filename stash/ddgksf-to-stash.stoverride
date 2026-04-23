@@ -25,7 +25,7 @@ http:
             binary-mode: false
             match: ^https?:\/\/script\.hub\/file\/_start_\/.+type=(?:qx-rewrite|surge-module|stash-override|all-module)
             max-size: 1048576
-            require-body: true
+            require-body: false
             timeout: 20
             type: request
             debug: false
