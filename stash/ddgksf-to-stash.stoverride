@@ -1,9 +1,11 @@
-name: 脚本转换与网页变身 - 远程完美版
+name: 墨鱼脚本一键转换与解密终极版
 desc: |-
-    - 全远程加载，解决 GET 死锁
-    - 包含重定向链接修复后处理功能
+    1. 自动变身 Stash 按钮并一键跳转安装
+    2. 解决假域名 GET 请求死锁
+    3. 内置 http://script.hub/decrypt?url= 探测工具
 category: enhance
 icon: https://stash.wiki/favicon.ico
+
 http:
     mitm:
         - script.hub
@@ -13,45 +15,36 @@ http:
         - script.hub
         - "*.script.hub"
     script:
-        -   name: web-rocket-remote
-            binary-mode: false
+        # 1. 网页变身与跳转
+        -   name: web-rocket
             match: ^https?:\/\/ddgksf2013\.top\/$
-            max-size: 1048576
-            require-body: true
-            timeout: 20
             type: response
-            debug: false
+            require-body: true
+            script-path: web-rocket-remote
             
+        # 2. 官方解析器（处理假域名转换）
         -   name: script-hub-parser
-            binary-mode: false
-            match: ^https?:\/\/script\.hub\/file\/_start_\/.+type=(?:qx-rewrite|surge-module|stash-override|stash-stoverride|all-module)
-            max-size: 1048576
-            require-body: false
-            timeout: 20
+            match: ^https?:\/\/script\.hub\/file\/_start_\/.+type=(?:qx-rewrite|surge-module|stash-override|stash-stoverride)
             type: request
-            debug: false
+            require-body: false
+            script-path: script-hub-parser-remote
             
-        -   name: fix-redirect-remote
-            binary-mode: false
-            match: ^https?:\/\/script\.hub\/file\/_start_\/.+
-            max-size: 1048576
-            require-body: true
-            timeout: 20
-            type: response
-            debug: false
+        # 3. 真实直链解密器（探测工具）
+        -   name: link-decryptor
+            match: ^http:\/\/script\.hub\/decrypt\?url=
+            type: request
+            require-body: false
+            script-path: link-decryptor-remote
 
 script-providers:
-    # 1. 网页变身与一键跳转（读取你 GitHub 的更新版）
     web-rocket-remote:
-        url: https://github.com/xiatian327/my-rule-and-script/raw/refs/heads/main/script/ddgksf2013.top_web.rocket.js?v=10
+        url: https://github.com/xiatian327/my-rule-and-script/raw/refs/heads/main/script/ddgksf2013.top_web.rocket.js?v=11
         interval: 86400
         
-    # 2. 官方的万能转换解析脚本
-    script-hub-parser:
+    script-hub-parser-remote:
         url: https://raw.githubusercontent.com/Script-Hub-Org/Script-Hub/main/Rewrite-Parser.js
         interval: 86400
         
-    # 3. 修复重定向的外挂脚本（读取你 GitHub 新建的脚本）
-    fix-redirect-remote:
-        url: https://github.com/xiatian327/my-rule-and-script/raw/refs/heads/main/script/fix-links.js?v=10
+    link-decryptor-remote:
+        url: https://github.com/xiatian327/my-rule-and-script/raw/refs/heads/main/script/decryptor.js?v=11
         interval: 86400
