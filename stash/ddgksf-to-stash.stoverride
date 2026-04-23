@@ -13,7 +13,7 @@ http:
         - script.hub
         - "*.script.hub"
     script:
-        -   name: 网页变身
+        -   name: web-rocket
             binary-mode: false
             match: ^https?:\/\/ddgksf2013\.top\/$
             max-size: 1048576
@@ -21,17 +21,14 @@ http:
             timeout: 20
             type: response
             debug: false
-            script-path: web-rocket
-        -   name: 脚本转换
+        -   name: script-hub-parser
             binary-mode: false
-            # 已加入 stash-override 匹配，确保转换脚本能识别 Stash 格式需求
             match: ^https?:\/\/script\.hub\/file\/_start_\/.+type=(?:qx-rewrite|surge-module|stash-override|all-module)
             max-size: 1048576
             require-body: true
             timeout: 20
             type: request
             debug: false
-            script-path: script-hub-parser
 script-providers:
     web-rocket:
         url: https://github.com/xiatian327/my-rule-and-script/raw/refs/heads/main/script/ddgksf2013.top_web.rocket.js
