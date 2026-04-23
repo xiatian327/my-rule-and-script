@@ -1,30 +1,20 @@
-name: 脚本转换与网页变身 - 自定义
+name: 插件转换 - 脚本转换
 desc: |-
-    - 包含 ddgksf2013 的网页变身脚本
-    - 包含 Script Hub 的脚本转换功能，支持重写为 Stash 可用的安装链接
+    - 仅保留核心的 Script Hub 脚本转换功能
+    - 支持将指定插件地址重写为 Stash 可用的安装链接
 category: enhance
 icon: https://stash.wiki/favicon.ico
 http:
     mitm:
         - script.hub
         - "*.script.hub"
-        - ddgksf2013.top
     force-http-engine:
         - script.hub
         - "*.script.hub"
     script:
-        -   name: 网页变身
-            binary-mode: false
-            match: ^https?:\/\/ddgksf2013\.top\/$
-            max-size: 1048576
-            require-body: true
-            timeout: 20
-            type: response
-            debug: false
-            script-path: web-rocket
         -   name: 脚本转换
             binary-mode: false
-            # 已加入 stash-override 匹配，确保转换脚本能识别 Stash 格式需求
+            # 保留了 stash-override 以确保转换生效
             match: ^https?:\/\/script\.hub\/file\/_start_\/.+type=(?:qx-rewrite|surge-module|stash-override|all-module)
             max-size: 1048576
             require-body: true
@@ -32,10 +22,8 @@ http:
             type: request
             debug: false
             script-path: script-hub-parser
+
 script-providers:
-    web-rocket:
-        url: https://ddgksf2013.top/scripts/web.rocket.js
-        interval: 86400
     script-hub-parser:
         url: https://raw.githubusercontent.com/Script-Hub-Org/Script-Hub/main/Rewrite-Parser.js
         interval: 86400
