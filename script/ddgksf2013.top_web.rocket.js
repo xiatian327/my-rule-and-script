@@ -1,21 +1,23 @@
-let body = $response.body
-  // 1. 解锁网页
-  .replace(/Lock\s*=\s*\d/g, 'Lock=3')
-  
-  // 2. 视觉修改
-  .replace(/<\/i>\s*(QuantumultX|Shadowrocket|Surge)/gi, '</i> Stash')
-  
-  // 3. 剥离小火箭/QX的外壳，直接提取真实的 Script Hub 链接让浏览器打开
-  .replace(/(shadowrocket:\/\/install\?module=|quantumult-x:\/\/\/add-resource\?remote-resource=|surge:\/\/\/install-module\?url=)([^"'>\s]+)/gi, function(match, prefix, rawUrl) {
+try {
+    let body = $response.body
+      // 1. 解锁网页
+      .replace(/Lock\s*=\s*\d/g, 'Lock=3')
       
-      // 把被编码过的链接解开，还原成 http://script.hub... 的正常样式
-      let decodedUrl = decodeURIComponent(rawUrl);
+      // 2. 视觉修改：界面全换成 Stash
+      .replace(/<\/i>\s*(QuantumultX|Shadowrocket|Surge)/gi, '</i> Stash')
       
-      // 把链接里的 qx/surge 目标，精准替换为 stash-override
-      decodedUrl = decodedUrl.replace(/(target|type)=(shadowrocket-module|surge-module|qx-rewrite)/gi, '$1=stash-override');
+      // 3. 剥除外壳：直接把各种 App 的唤醒协议删掉（替换为空），暴露出底层的 http://script.hub 直链
+      .replace(/shadowrocket:\/\/install\?module=/gi, '')
+      .replace(/quantumult-x:\/\/\/add-resource\?remote-resource=/gi, '')
+      .replace(/surge:\/\/\/install-module\?url=/gi, '')
       
-      // 【关键】直接返回普通网址，不再套用 stash:// 协议！
-      return decodedUrl;
-  });
+      // 4. 安全替换目标参数：不解码直接替换目标格式，兼容编码前和编码后的状态
+      .replace(/target(=|%3D)(shadowrocket-module|surge-module|qx-rewrite)/gi, 'target$1stash-override')
+      .replace(/type(=|%3D)(shadowrocket-module|surge-module|qx-rewrite)/gi, 'type$1stash-override');
 
-$done({ body });
+    $done({ body });
+} catch (err) {
+    // 增加一个防崩溃保险：如果万一再报错，至少把网页放行，不影响正常浏览
+    console.log("Script Error: " + err);
+    $done({});
+}
