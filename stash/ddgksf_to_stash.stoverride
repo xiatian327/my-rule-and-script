@@ -1,3 +1,8 @@
+name: 插件转换 - 自定义转换
+desc: |-
+    - 对指定网站的插件安装地址重写为 Stash 可用的安装链接
+category: enhance
+icon: https://stash.wiki/favicon.ico
 http:
     mitm:
         - script.hub
