@@ -1,50 +1,41 @@
-name: 墨鱼脚本一键转换与解密终极版
-desc: |-
-    1. 自动变身 Stash 按钮并一键跳转安装
-    2. 解决假域名 GET 请求死锁
-    3. 内置 http://script.hub/decrypt?url= 探测工具
-category: enhance
-icon: https://stash.wiki/favicon.ico
+try {
+    let body = $response.body
+        .replace(/Lock\s*=\s*\d/g, 'Lock=3')
+        .replace(/<\/i>\s*(QuantumultX|Shadowrocket|Surge|qx)/gi, '</i> Stash');
 
-http:
-    mitm:
-        - script.hub
-        - "*.script.hub"
-        - ddgksf2013.top
-    force-http-engine:
-        - script.hub
-        - "*.script.hub"
-    script:
-        # 1. 网页变身与跳转
-        -   name: web-rocket
-            match: ^https?:\/\/ddgksf2013\.top\/$
-            type: response
-            require-body: true
-            script-path: web-rocket-remote
-            
-        # 2. 官方解析器（处理假域名转换）
-        -   name: script-hub-parser
-            match: ^https?:\/\/script\.hub\/file\/_start_\/.+type=(?:qx-rewrite|surge-module|stash-override|stash-stoverride)
-            type: request
-            require-body: false
-            script-path: script-hub-parser-remote
-            
-        # 3. 真实直链解密器（探测工具）
-        -   name: link-decryptor
-            match: ^http:\/\/script\.hub\/decrypt\?url=
-            type: request
-            require-body: false
-            script-path: link-decryptor-remote
+    let injectJS = `
+    <script>
+        document.addEventListener('click', function(e) {
+            let btn = e.target.closest('a');
+            if (btn && btn.href) {
+                let oldHref = btn.href;
+                if (oldHref.includes('shadowrocket://') || oldHref.includes('quantumult-x://') || oldHref.includes('surge://')) {
+                    e.preventDefault();
+                    
+                    let raw = oldHref.replace(/^(shadowrocket:\\/\\/install\\?module=|surge:\\/\\/\\/install-module\\?url=|quantumult-x:\\/\\/\\/add-resource\\?remote-resource=)/i, '');
+                    let clean = decodeURIComponent(raw);
+                    
+                    // 1. 【认错修复】坚决使用 http://，绝不升级 https，防止 SSL 证书报错导致 -1
+                    clean = clean.replace(/^https:\\/\\/script\\.hub/i, 'http://script.hub');
+                    
+                    // 2. 使用你提供的标准参数：target=stash-stoverride
+                    clean = clean.replace(/target=[^&]+/gi, 'target=stash-stoverride');
+                    
+                    // 3. 将文件后缀改为标准的 .stoverride
+                    clean = clean.replace(/\\.([a-zA-Z0-9]+)(\\?)/i, '.stoverride$2');
+                    
+                    // 4. 重新使用 Stash 的一键导入协议，并进行严格的 URL 编码！
+                    let finalUrl = 'stash://install-override?url=' + encodeURIComponent(clean);
+                    window.location.href = finalUrl;
+                }
+            }
+        }, true);
+    </script>
+    `;
 
-script-providers:
-    web-rocket-remote:
-        url: https://github.com/xiatian327/my-rule-and-script/raw/refs/heads/main/script/ddgksf2013.top_web.rocket.js?v=11
-        interval: 86400
-        
-    script-hub-parser-remote:
-        url: https://raw.githubusercontent.com/Script-Hub-Org/Script-Hub/main/Rewrite-Parser.js
-        interval: 86400
-        
-    link-decryptor-remote:
-        url: https://github.com/xiatian327/my-rule-and-script/raw/refs/heads/main/script/decryptor.js?v=11
-        interval: 86400
+    body = body + injectJS;
+    $done({ body });
+
+} catch (err) {
+    $done({});
+}
