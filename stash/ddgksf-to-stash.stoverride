@@ -1,7 +1,7 @@
-name: 脚本转换与网页变身 - 自定义
+name: 脚本转换与网页变身 - 远程完美版
 desc: |-
-    - 包含 ddgksf2013 的网页变身脚本
-    - 包含 Script Hub 的脚本转换功能，支持重写为 Stash 可用的安装链接
+    - 全远程加载，解决 GET 死锁
+    - 包含重定向链接修复后处理功能
 category: enhance
 icon: https://stash.wiki/favicon.ico
 http:
@@ -13,7 +13,7 @@ http:
         - script.hub
         - "*.script.hub"
     script:
-        -   name: web-rocket
+        -   name: web-rocket-remote
             binary-mode: false
             match: ^https?:\/\/ddgksf2013\.top\/$
             max-size: 1048576
@@ -21,18 +21,37 @@ http:
             timeout: 20
             type: response
             debug: false
+            
         -   name: script-hub-parser
             binary-mode: false
-            match: ^https?:\/\/script\.hub\/file\/_start_\/.+type=(?:qx-rewrite|surge-module|stash-override|all-module)
+            match: ^https?:\/\/script\.hub\/file\/_start_\/.+type=(?:qx-rewrite|surge-module|stash-override|stash-stoverride|all-module)
             max-size: 1048576
             require-body: false
             timeout: 20
             type: request
             debug: false
+            
+        -   name: fix-redirect-remote
+            binary-mode: false
+            match: ^https?:\/\/script\.hub\/file\/_start_\/.+
+            max-size: 1048576
+            require-body: true
+            timeout: 20
+            type: response
+            debug: false
+
 script-providers:
-    web-rocket:
-        url: https://github.com/xiatian327/my-rule-and-script/raw/refs/heads/main/script/ddgksf2013.top_web.rocket.js?v=138826
+    # 1. 网页变身与一键跳转（读取你 GitHub 的更新版）
+    web-rocket-remote:
+        url: https://github.com/xiatian327/my-rule-and-script/raw/refs/heads/main/script/ddgksf2013.top_web.rocket.js?v=10
         interval: 86400
+        
+    # 2. 官方的万能转换解析脚本
     script-hub-parser:
         url: https://raw.githubusercontent.com/Script-Hub-Org/Script-Hub/main/Rewrite-Parser.js
+        interval: 86400
+        
+    # 3. 修复重定向的外挂脚本（读取你 GitHub 新建的脚本）
+    fix-redirect-remote:
+        url: https://github.com/xiatian327/my-rule-and-script/raw/refs/heads/main/script/fix-links.js?v=10
         interval: 86400
