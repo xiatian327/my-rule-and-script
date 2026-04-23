@@ -31,7 +31,7 @@ http:
             debug: false
 script-providers:
     web-rocket:
-        url: https://github.com/xiatian327/my-rule-and-script/raw/refs/heads/main/script/ddgksf2013.top_web.rocket.js?v=3566886
+        url: https://github.com/xiatian327/my-rule-and-script/raw/refs/heads/main/script/ddgksf2013.top_web.rocket.js?v=356886
         interval: 86400
     script-hub-parser:
         url: https://raw.githubusercontent.com/Script-Hub-Org/Script-Hub/main/Rewrite-Parser.js
