@@ -2,6 +2,8 @@ name: |-
   JavDB应用去广告
 desc: |-
   净化应用内广告
+icon: |-
+  https://raw.githubusercontent.com/ginibond/ginibond/main/Icons/Forward/Javdb.png
 category: |-
   ad
 
