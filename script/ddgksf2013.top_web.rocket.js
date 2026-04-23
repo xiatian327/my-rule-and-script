@@ -1,24 +1,21 @@
 let body = $response.body
-  // 1. 保留核心：解锁网页隐藏内容
+  // 1. 解锁网页
   .replace(/Lock\s*=\s*\d/g, 'Lock=3')
   
-  // 2. 视觉修改：界面全换成 Stash
+  // 2. 改名字为 Stash
   .replace(/<\/i>\s*(QuantumultX|Shadowrocket|Surge)/gi, '</i> Stash')
   
-  // 3. 拦截协议，并动态处理链接
-  .replace(/(quantumult-x:\/\/\/add-resource\?remote-resource=|shadowrocket:\/\/install\?module=|surge:\/\/\/install-module\?url=)([^"'>\s]+)/gi, function(match, prefix, rawUrl) {
-      
-      // 步骤 A：把原链接解码（原链接里可能带有 %3D 等乱七八糟的编码，先解开）
-      let safeUrl = decodeURIComponent(rawUrl);
-      
-      // 步骤 B：强制升级为 HTTPS，避开 iOS 的 HTTP 拦截报错 -1
-      safeUrl = safeUrl.replace(/^http:\/\//i, 'https://');
-      
-      // 步骤 C：将 Script Hub 的转换目标精准修改为 Stash
-      safeUrl = safeUrl.replace(/target=(shadowrocket-module|surge-module|qx-rewrite)/gi, 'target=stash-override');
-      
-      // 步骤 D：重新进行严格的 URL 编码，并拼接 Stash 协议
-      return 'stash://install-override?url=' + encodeURIComponent(safeUrl);
-  });
+  // 3. 暴力替换所有唤醒协议为 Stash
+  .replace(/shadowrocket:\/\/install\?module=/gi, 'stash://install-override?url=')
+  .replace(/quantumult-x:\/\/\/add-resource\?remote-resource=/gi, 'stash://install-override?url=')
+  .replace(/surge:\/\/\/install-module\?url=/gi, 'stash://install-override?url=')
+  
+  // 4. 暴力修复 -1 报错：把 http 强行换成 https (兼容明文和被转义两种情况)
+  .replace(/http:\/\/script\.hub/gi, 'https://script.hub')
+  .replace(/http%3A%2F%2Fscript\.hub/gi, 'https%3A%2F%2Fscript.hub')
+  
+  // 5. 暴力修改 Script Hub 的转换目标为 stash-override (兼容明文和被转义两种情况)
+  .replace(/target=(shadowrocket-module|surge-module|qx-rewrite)/gi, 'target=stash-override')
+  .replace(/target%3D(shadowrocket-module|surge-module|qx-rewrite)/gi, 'target%3Dstash-override');
 
 $done({ body });
