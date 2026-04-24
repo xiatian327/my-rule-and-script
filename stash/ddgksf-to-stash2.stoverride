@@ -7,7 +7,7 @@ icon: https://stash.wiki/favicon.ico
 
 # 只添加这一段规则模块
 rules:
-  - AND,((DOMAIN-SUFFIX,ddgksf2013.top),(PROTOCOL,QUIC)),REJECT
+  - AND,((DOMAIN-SUFFIX,ddgksf2013.top),(PROTOCOL,QUIC)),REJECT-NO-DROP
 
 http:
     mitm:
