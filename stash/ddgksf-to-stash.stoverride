@@ -1,7 +1,6 @@
-name: 脚本转换与网页变身 - 远程完美版
+name: 脚本转换 - 墨鱼
 desc: |-
-    - 全远程加载，解决 GET 死锁
-    - 包含重定向链接修复后处理功能
+    - 缺少REJECT-NO-DROP
 category: enhance
 icon: https://stash.wiki/favicon.ico
 
@@ -41,7 +40,7 @@ http:
 script-providers:
     # 1. 网页变身与一键跳转（读取你 GitHub 的更新版）
     web-rocket-remote:
-        url: https://github.com/xiatian327/my-rule-and-script/raw/refs/heads/main/script/ddgksf2013.top_web.rocket.js?v=12
+        url: https://github.com/xiatian327/my-rule-and-script/raw/refs/heads/main/script/ddgksf_web.stash.js?v=12
         interval: 86400
         
     # 2. 官方的万能转换解析脚本
