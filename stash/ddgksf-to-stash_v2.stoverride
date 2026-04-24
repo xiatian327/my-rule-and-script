@@ -6,7 +6,7 @@ category: enhance
 icon: https://stash.wiki/favicon.ico
 
 # 只添加这一段规则模块
-rule:
+rules:
   - AND,((DOMAIN-SUFFIX,ddgksf2013.top),(PROTOCOL,QUIC)),REJECT-DROP,no-track
 
 http:
