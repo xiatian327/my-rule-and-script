@@ -1,5 +1,5 @@
 /*
- * Stash 节点生成器 (拦截虚拟 URL)
+ * Stash 节点生成器 (修复 YAML 缩进与 VLESS 标准格式)
  */
 function getData(key) {
     let val = $persistentStore.read(key);
@@ -13,26 +13,35 @@ let d_ct = getData("CF_DATA_CT") || def;
 let d_cu = getData("CF_DATA_CU") || def;
 let d_v6 = getData("CF_DATA_V6") || def;
 
-const uuid = "87d65d8f-c91a-4668-b505-daa251079964";
-const host = "sapsg.txia363.nyc.mn";
-const path = "/vless-argo?ed"; 
+const uuid = "22bffd38-d02a-4716-8397-a1bf82a0f1fc";
+const host = "edkk.king8888.nyc.mn";
+const path = "/"; 
 
 function genYamlNode(emoji, name, item) {
-    let ip = item.ip.replace(/\[|\]/g, ""); // Clash 格式不带括号
+    let ip = item.ip.replace(/\[|\]/g, ""); // 移除 IPv6 可能带的括号
     let nodeName = `${emoji} ${name} | ${item.ping}ms ${item.bw}M`;
-    return `  - name: "${nodeName}"
-    type: vless
-    server: "${ip}"
-    port: 443
-    uuid: "${uuid}"
-    udp: true
-    tls: true
-    network: ws
-    sni: "${host}"
-    ws-opts:
-      path: "${path}"
-      headers:
-        Host: "${host}"`;
+    
+    // 采用数组逐行拼接，彻底避免 JS 模板字符串引起的 YAML 缩进错乱
+    let yamlLines = [
+        `  - name: "${nodeName}"`,
+        `    type: vless`,
+        `    server: "${ip}"`,
+        `    port: 443`,
+        `    uuid: "${uuid}"`,
+        `    cipher: none`,
+        `    alterId: 0`,
+        `    flow: ""`,
+        `    network: ws`,
+        `    tls: true`,
+        `    sni: "${host}"`,
+        `    servername: "${host}"`,
+        `    skip-cert-verify: true`,
+        `    ws-opts:`,
+        `      path: "${path}"`,
+        `      headers:`,
+        `        Host: "${host}"`
+    ];
+    return yamlLines.join("\n");
 }
 
 let body = "proxies:\n" + [
