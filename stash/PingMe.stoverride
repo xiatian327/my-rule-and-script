@@ -10,7 +10,7 @@ tiles:
     content: 点击运行签到或等待定时触发
     icon: gift.fill # 可以用系统图标，也可以换成 PingMe 的 URL 图标
     backgroundColor: "#FF9500" # 默认给个橙色，脚本执行成功后会变成绿色
-    collapsed: false
+    collapsed: true
 
 # ================================
 # 2. 脚本逻辑 (Script)
