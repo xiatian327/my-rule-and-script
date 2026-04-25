@@ -1,0 +1,32 @@
+#SUBSCRIBED https://raw.githubusercontent.com/xiatian327/my-rule-and-script/refs/heads/main/stash/CFyouxuan.stoverride
+name: Cloudflare优选
+desc: 自动优选CF IP并显示在首页Tile
+
+tiles:
+  - name: CF-Best-IP
+    title: Cloudflare 优选
+    content: 点击运行优选
+    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Cloudflare.png
+    collapsed: false
+
+script:
+  shortcuts:
+    # 关键：拦截订阅链接请求
+    CF_Generate:
+      pattern: "^http://stash.local/cf-nodes$"
+      type: request
+      script-provider: CF-NodeGen
+
+script-providers:
+  CF-Best-IP:
+    url: "https://raw.githubusercontent.com/xiatian327/my-rule-and-script/main/script/cf-panel.js"
+    interval: 28800
+  CF-NodeGen:
+    url: "https://raw.githubusercontent.com/xiatian327/my-rule-and-script/main/script/cf-nodegen.js"
+
+proxy-providers:
+  CF优选节点:
+    type: http
+    url: "http://stash.local/cf-nodes"
+    interval: 3600
+    path: ./cf-nodes.yaml
