@@ -10,7 +10,7 @@ tiles:
     content: 点击运行优选
     icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Cloudflare.png
     # false = 展开显示详情，true = 仅显示图标
-    collapsed: false
+    collapsed: true
     # 点击是否跳转网页，不需要可以删掉这行
     # url: http://substore.stash
 
