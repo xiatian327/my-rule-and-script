@@ -23,7 +23,7 @@ script-providers:
     url: "https://raw.githubusercontent.com/xiatian327/my-rule-and-script/main/script/cf-panel.js"
     interval: 28800
   CF-NodeGen:
-    url: "https://raw.githubusercontent.com/xiatian327/my-rule-and-script/main/script/cf-nodegen.js"
+    url: "https://raw.githubusercontent.com/xiatian327/my-rule-and-script/main/script/cf-nodegen.js?v=8"
 
 proxy-providers:
   CF优选节点:
