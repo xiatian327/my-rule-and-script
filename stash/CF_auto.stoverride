@@ -9,13 +9,14 @@ tiles:
     icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Cloudflare.png
     collapsed: false
 
-script:
-  shortcuts:
-    # 关键：拦截订阅链接请求
-    CF_Generate:
-      pattern: "^http://stash.local/cf-nodes$"
-      type: request
-      script-provider: CF-NodeGen
+# ================================
+# ⚠️ 修复点：改用 scripts 节点进行请求拦截
+# ================================
+scripts:
+  CF_Generate:
+    pattern: "^http://stash.local/cf-nodes$"
+    type: request
+    script-provider: CF-NodeGen
 
 script-providers:
   CF-Best-IP:
