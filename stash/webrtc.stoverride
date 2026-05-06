@@ -1,0 +1,6 @@
+name: 防WebRtc泄露
+desc: ""
+category: ruleset
+icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Hijacking.png
+rules:
+  - PROTOCOL,STUN,REJECT
