@@ -1,5 +1,5 @@
-name: 防WebRtc泄露
-desc: ""
+name: WebRtc
+desc: "防WebRtc泄露"
 category: ruleset
 icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Hijacking.png
 rules:
