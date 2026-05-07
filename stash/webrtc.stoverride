@@ -3,4 +3,5 @@ desc: "防WebRtc泄露"
 category: ruleset
 icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Hijacking.png
 rules:
+  - DOMAIN,twns.p2ptun.qq.com,DIRECT
   - PROTOCOL,STUN,REJECT
