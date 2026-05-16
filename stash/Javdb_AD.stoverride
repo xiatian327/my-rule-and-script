@@ -16,7 +16,7 @@ http:
     - "api.yijingluowangluo.xyz"
     - "api.wwwuh5.cn"
     - "api.ffaoa.com"
-    - "apidd.btyjscl.com"
+    - "apidd.*.com"
 
   script:
 # > JavDB_开屏广告
