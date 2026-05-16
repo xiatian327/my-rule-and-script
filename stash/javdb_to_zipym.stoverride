@@ -6,7 +6,7 @@ desc: |-
 http:
 
   mitm:
-    - "apidd.btyjscl.com"
+    - "apidd.*.com"
 
   script:
 # > 1. 拦截通知点击后的网页，返回跳转 HTML
