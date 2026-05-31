@@ -10,7 +10,7 @@ category: |-
 http:
 
   mitm:
-    - "-redirector*.googlevideo.com"
+    - "redirector*.googlevideo.com"
     - "*.googlevideo.com"
     - "www.youtube.com"
     - "s.youtube.com"
@@ -19,7 +19,7 @@ http:
   url-rewrite:
 # ======= 视频广告请求 ======= #
     - >-
-      (^https?:\/\/[\w-]+\.googlevideo\.com\/(?!dclk_video_ads).+?)&ctier=L(&.+?),ctier,(.+) $1$2$3 302
+      ^https?:\/\/[\w-]+\.googlevideo\.com\/(?!dclk_video_ads).+?&ctier=L(&.+?),ctier,(.+) https://$1$2$3 302
     - >-
       ^https?:\/\/[\w-]+\.googlevideo\.com\/(?!(dclk_video_ads|videoplayback\?)).+&oad - reject-200
 # ======= 通用广告请求 ======= #
@@ -33,7 +33,7 @@ http:
   script:
 # ======= 视频PIP|后台播放|瀑布流|搜索页|播放页|短视频|贴片广告  ======= #
     - match: ^https?:\/\/youtubei\.googleapis\.com\/youtubei\/v1\/(browse|next|player|search|reel\/reel_watch_sequence|guide|account\/get_setting|get_watch)
-      name: "youtube.response_13"
+      name: "youtube.response_8"
       type: response
       require-body: true
       max-size: -1
@@ -41,6 +41,6 @@ http:
       timeout: 60
 
 script-providers:
-  "youtube.response_13":
+  "youtube.response_8":
     url: https://github.com/xiatian327/my-rule-and-script/raw/refs/heads/main/script/youtube.response.js
     interval: 86400
