@@ -26,6 +26,6 @@ http:
       timeout: 10
 
 script-providers:
-  "javdb_to_zipym":
+  javdb_to_zipym:
     url: https://raw.githubusercontent.com/xiatian327/my-rule-and-script/refs/heads/main/script/javdb_to_zipym.js?v=2
     interval: 86400
