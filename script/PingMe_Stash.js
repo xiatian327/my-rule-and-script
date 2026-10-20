@@ -1,6 +1,6 @@
-// 2026/04/16
+// 2026/04/16 (Updated for Stash robust JSON parse)
 /*
-@Name：PingMe 自动化签到+视频奖励 (Stash async 重构版)
+@Name：PingMe 自动化签到+视频奖励 (Stash async 增强容错版)
 */
 
 const scriptName = 'PingMe';
@@ -135,7 +135,7 @@ function sleep(ms) {
 // ================= 2. 核心异步执行逻辑 =================
 (async function() {
     // [模式A] 抓包模式：如果是通过请求进来的
-    if (typeof $request !== 'undefined' && $request && $request.url) {
+    if (typeof $request !== 'undefined' && $request &&$request.url) {
         let reqCapture = {
             url: $request.url,
             paramsRaw: parseRawQuery($request.url),
@@ -172,15 +172,20 @@ function sleep(ms) {
     let checkInStatus = "获取中";
     let videoEarned = 0;
 
-    // 网络请求封装器
+    // 网络请求封装器（增加非空响应校验）
     function fetchApi(path) {
         return new Promise((resolve, reject) => {
             $httpClient.get({
                 url: buildUrl(path, captureObj),
                 headers: headers
             }, (error, response, data) => {
-                if (error) reject(error);
-                else resolve(data);
+                if (error) {
+                    reject(new Error("网络请求失败: " + error));
+                } else if (!data || data.trim() === "") {
+                    reject(new Error("服务器响应数据为空（可能触发了节点拦截或限流）"));
+                } else {
+                    resolve(data);
+                }
             });
         });
     }
@@ -189,45 +194,73 @@ function sleep(ms) {
     try {
         // 1. 查询初始余额
         let res1 = await fetchApi('queryBalanceAndBonus');
-        let d1 = JSON.parse(res1);
-        if (d1.retcode === 0) msgs.push(`💰 初始：${d1.result.balance} Coins`);
-        else msgs.push(`⚠️ 查询：${d1.retmsg}`);
+        let d1;
+        try {
+            d1 = JSON.parse(res1);
+        } catch (e) {
+            throw new Error("解析初始余额响应失败，原始内容: " + res1);
+        }
+        
+        if (d1.retcode === 0 && d1.result) {
+            msgs.push(`💰 初始：${d1.result.balance} Coins`);
+        } else {
+            msgs.push(`⚠️ 查询：${d1.retmsg || '未知错误'}`);
+        }
 
         // 2. 每日签到
         let res2 = await fetchApi('checkIn');
-        let d2 = JSON.parse(res2);
+        let d2;
+        try {
+            d2 = JSON.parse(res2);
+        } catch (e) {
+            d2 = { retcode: -1, retmsg: "解析签到响应失败" };
+        }
+        
         if (d2.retcode === 0) {
             let hint = (d2.result?.bonusHint || d2.retmsg || '').replace(/\n/g, ' ');
             msgs.push(`✅ 签到：${hint}`);
             checkInStatus = "成功";
         } else {
-            msgs.push(`⚠️ 签到：${d2.retmsg}`);
+            msgs.push(`⚠️ 签到：${d2.retmsg || '重复或失败'}`);
             checkInStatus = "重复或失败";
         }
 
         // 3. 循环看视频任务
         for (let i = 1; i <= MAX_VIDEO; i++) {
-            await sleep(i === 1 ? 1500 : VIDEO_DELAY); // 第一个等短点，后续严格遵守延迟
+            await sleep(i === 1 ? 1500 : VIDEO_DELAY); 
             try {
                 let vRes = await fetchApi('videoBonus');
-                let vD = JSON.parse(vRes);
+                let vD;
+                try {
+                    vD = JSON.parse(vRes);
+                } catch (e) {
+                    msgs.push(`❌ 视频${i}：解析响应失败`);
+                    break;
+                }
+                
                 if (vD.retcode === 0) {
                     msgs.push(`🎬 视频${i}：+${vD.result?.bonus || '?'} Coins`);
                     videoEarned++;
                 } else {
                     msgs.push(`⏸ 视频${i}：${vD.retmsg}`);
-                    // 遇到上限提前退出循环
                     break;
                 }
             } catch (err) {
-                msgs.push(`❌ 视频${i}：请求异常`);
+                msgs.push(`❌ 视频${i}：${err.message}`);
+                break;
             }
         }
 
         // 4. 查询最新余额
         let res3 = await fetchApi('queryBalanceAndBonus');
-        let d3 = JSON.parse(res3);
-        if (d3.retcode === 0) {
+        let d3;
+        try {
+            d3 = JSON.parse(res3);
+        } catch (e) {
+            d3 = null;
+        }
+        
+        if (d3 && d3.retcode === 0 && d3.result) {
             finalBalance = d3.result.balance;
             msgs.push(`💰 最新：${d3.result.balance} Coins`);
         }
@@ -254,7 +287,7 @@ function sleep(ms) {
 
     } catch (fatalError) {
         // 全局致命错误捕获
-        let errMsg = "执行发生异常: " + String(fatalError);
+        let errMsg = "执行发生异常: " + String(fatalError.message || fatalError);
         console.log(`${scriptName} ❌ 崩溃:\n` + errMsg);
         
         if (typeof $notification !== 'undefined') {
@@ -264,7 +297,7 @@ function sleep(ms) {
         // 异常结束，涂抹红色！
         $done({ 
             title: "PingMe 签到", 
-            content: "网络连接超时或中断", 
+            content: errMsg.length > 25 ? "网络连接异常或解析失败" : errMsg, 
             icon: "xmark.octagon", 
             backgroundColor: "#FF3B30" 
         });
