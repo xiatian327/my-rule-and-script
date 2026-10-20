@@ -1,6 +1,6 @@
-// 2026/04/16 (Updated for Stash robust JSON parse)
+// 2026/04/16 (Updated for Stash robust JSON parse & identity encoding)
 /*
-@Name：PingMe 自动化签到+视频奖励 (Stash async 增强容错版)
+@Name：PingMe 自动化签到+视频奖励 (Stash async 增强容错及明文返回版)
 */
 
 const scriptName = 'PingMe';
@@ -9,7 +9,7 @@ const SECRET = '0fOiukQq7jXZV2GRi9LGlO';
 const MAX_VIDEO = 5;
 const VIDEO_DELAY = 8000;
 
-// ================= 1. MD5 及工具函数 (保持不变) =================
+// ================= 1. MD5 及工具函数 =================
 function MD5(string) {
   function RotateLeft(lValue, iShiftBits) { return (lValue << iShiftBits) | (lValue >>> (32 - iShiftBits)); }
   function AddUnsigned(lX, lY) {
@@ -125,6 +125,7 @@ function buildHeaders(captureObj) {
   delete headers[':authority']; delete headers[':method']; delete headers[':path']; delete headers[':scheme'];
   headers['Host'] = 'api.pingmeapp.net';
   headers['Accept'] = headers['Accept'] || 'application/json';
+  headers['Accept-Encoding'] = 'identity'; // 👈 关键修复：强制返回明文，避免二进制乱码
   return headers;
 }
 
